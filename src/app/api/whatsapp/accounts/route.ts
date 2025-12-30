@@ -69,7 +69,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     // Check WhatsApp module license
-    const { tenantId, userId } = await requireWhatsAppAccess(request)
+    const { tenantId, userId } = await requireModuleAccess(request, 'whatsapp')
 
     const body = await request.json()
     const validated = createWhatsappAccountSchema.parse(body)
@@ -130,8 +130,8 @@ export async function POST(request: NextRequest) {
         channelType: validated.channelType || 'web',
         wahaBaseUrl: validated.wahaBaseUrl || null,
         wahaApiKey: validated.wahaApiKey || null, // In production, encrypt this
-        businessName: validated.businessName || null,
-        primaryPhone: validated.primaryPhone || null,
+        businessName: validated.businessName || '',
+        primaryPhone: validated.primaryPhone || '',
         isWebConnected: true,
         status: 'active',
       },

@@ -38,6 +38,7 @@ export async function GET(
             id: true,
             businessName: true,
             status: true,
+            tenantId: true,
           },
         },
         _count: {

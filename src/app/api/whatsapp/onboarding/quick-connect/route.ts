@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { requireModuleAccess, handleLicenseError } from '@/lib/middleware/auth'
+import { requireModuleAccess, handleLicenseError, authenticateRequest } from '@/lib/middleware/auth'
 import { prisma } from '@payaid/db'
 import { z } from 'zod'
 import {
@@ -38,10 +38,7 @@ const quickConnectSchema = z.object({
  */
 export async function POST(request: NextRequest) {
   try {
-    const user = await authenticateRequest(request)
-    if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+    const { tenantId, userId } = await requireModuleAccess(request, 'whatsapp')
 
     const body = await request.json()
     const validated = quickConnectSchema.parse(body)
